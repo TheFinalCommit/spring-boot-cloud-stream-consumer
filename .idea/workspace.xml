@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="00538546-168e-437b-a28d-6a0a42eb2f6d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/src/main/groovy/com/springcloudstream/example/service/event/listener/SampleEventListener.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/service/src/main/groovy/com/springcloudstream/example/service/event/listener/SampleEventListener.groovy" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,7 +252,8 @@
       <workItem from="1717291652354" duration="8792000" />
       <workItem from="1717373811397" duration="2449000" />
       <workItem from="1717376954941" duration="786000" />
-      <workItem from="1717385666956" duration="909000" />
+      <workItem from="1717385666956" duration="1304000" />
+      <workItem from="1717417927101" duration="3168000" />
     </task>
     <servers />
   </component>
