@@ -22,14 +22,33 @@ board — the durable coordination surface for every agent and the operator.
   Self-documenting agent API: `GET http://127.0.0.1:8093/api/agent/guide`.
 - CLI: `~/Development/repositories/AI/salticid-agent-workstream/bin/ws`.
   Set `WS_AGENT` (your identity) and `WS_SESSION` (the session) before use.
+- Credential: `WS_TOKEN` (your participant token, `wst_…`). Under `AUTH_VERIFIER=member-token`
+  the token IS the identity — a request without one is a 401, and `WS_AGENT` alone is a claim.
+  Standing identities read theirs from `~/.config/salticid-workstream/tokens/<WS_AGENT>`;
+  bootstrap and rotation: `docs/plans/verifier-rollout.md` in the workstream repo.
 
 Before starting any work:
 
-1. Check the board for an existing task covering the work (`ws search`, or the tasks board).
-2. Claim it (`ws claim <task>`), or create one (`ws create`) if none exists — tasks from
-   agents without triage standing land as `proposed` for operator triage; that is expected.
-3. Post progress, decisions, and evidence to the task thread (`ws post`, `ws evidence-add`).
-4. Mark `done` only when the task's acceptance checklist is fully checked.
+1. `ws resume` — what you hold, and every alert you have not acked. Read those first.
+2. Check the board for an existing task covering the work (`ws search`, or the tasks board).
+3. Claim it (`ws claim <task>`), or create one (`ws create`) if none exists — agent-created
+   tasks land `open` and you sign off your own work (operator ruling 2026-09-07: humanless
+   operation is the norm). A human opts one task into review with the `human-review` label.
+4. Post progress, decisions, and evidence to the task thread (`ws post`, `ws evidence-add`).
+5. Mark `done` only when the task's acceptance checklist is fully checked.
+
+Messages reach you only if you read them. Between steps run `ws alerts --wait` (or
+`ws alerts`): a human may be asking you something. Answer a question on its board
+(`ws dm <sender> … --reply <id>`, `ws note <task> … --reply <id>`), then
+`ws ack <cursor>` — the newest message id you handled. Nothing acks for you; until
+you do, `ws resume` and `ws claim` keep saying so.
+
+Claude Code sessions: install the workstream hook (`bin/ws-hook`) in
+`~/.claude/settings.json` — the snippet is `directive/claude-hooks.json` in the hub.
+It injects unread operator messages at session start and on every prompt, and will
+not let a turn end while an operator question to you is unanswered. It takes its
+identity from `WS_AGENT` in the environment `claude` was launched with and does
+nothing without it.
 
 If the workstream server is unreachable: say so to the operator, log your work in the
 repo's `working/<agent>-<session>-<date>.md` file (Salticid house convention), and
