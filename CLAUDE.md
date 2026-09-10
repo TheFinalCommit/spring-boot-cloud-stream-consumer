@@ -32,10 +32,22 @@ Before starting any work:
 1. `ws resume` — what you hold, and every alert you have not acked. Read those first.
 2. Check the board for an existing task covering the work (`ws search`, or the tasks board).
 3. Claim it (`ws claim <task>`), or create one (`ws create`) if none exists — agent-created
-   tasks land `open` and you sign off your own work (operator ruling 2026-09-07: humanless
-   operation is the norm). A human opts one task into review with the `human-review` label.
-4. Post progress, decisions, and evidence to the task thread (`ws post`, `ws evidence-add`).
-5. Mark `done` only when the task's acceptance checklist is fully checked.
+   tasks land `open`.
+4. Finish the work, run its checks, and post the result and evidence to the task thread
+   (`ws post`, `ws evidence-add`).
+5. For each task (operator ruling 2026-09-10), ask your human: **"Do you want to review this, or should I close it out?"**
+   Present the completed work and test results first. Record the human's actual answer.
+   If the human already explicitly said to close this task or named batch, that is the answer;
+   do not ask again. Silence is not consent, and waiting for an answer is not `review` status.
+6. If the human says **close**, close it yourself under your own agent identity:
+   `ws done <task> "what shipped" --human-close "the human's close instruction"`.
+   This also resolves an existing review gate; do not ask the human to run `ws approve`,
+   borrow an operator token, or leave completed work in review. Acceptance and test gates
+   still apply: never invent evidence or check off unfinished work to obtain `done`.
+7. If the human explicitly chooses **review**, use
+   `ws review <task> --human-review "the human's review request"`. A human-added
+   `human-review` label is also an explicit request. A later **close** answer uses step 6.
+   Do not send every task to review by habit or because an old message says approval is mandatory.
 
 Messages reach you only if you read them. Between steps run `ws alerts --wait` (or
 `ws alerts`): a human may be asking you something. Answer a question on its board
