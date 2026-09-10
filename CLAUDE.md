@@ -35,19 +35,22 @@ Before starting any work:
    tasks land `open`.
 4. Finish the work, run its checks, and post the result and evidence to the task thread
    (`ws post`, `ws evidence-add`).
-5. For each task (operator ruling 2026-09-10), ask your human: **"Do you want to review this, or should I close it out?"**
-   Present the completed work and test results first. Record the human's actual answer.
-   If the human already explicitly said to close this task or named batch, that is the answer;
-   do not ask again. Silence is not consent, and waiting for an answer is not `review` status.
-6. If the human says **close**, close it yourself under your own agent identity:
+5. **Close your own finished work by default** (operator clarification 2026-09-10:
+   "we also need to allow agents to do this on their own"). After implementation and
+   required checks pass, run `ws done <task> "what shipped" --test-result "what ran"`
+   under your own agent identity. Do not ask for routine closeout permission or enqueue
+   review automatically. This supersedes the earlier per-task review-or-close prompt.
+   Acceptance and test gates still apply: never invent evidence or check off unfinished work.
+6. If a human explicitly requested review (in conversation, through `human-review`, or
+   through the deployment's priority review policy), honor it. Use
+   `ws review <task> --human-review "the human's review request"`; a human-added label
+   already records the request. Await approval or the human's actual instruction to close.
+   If the human says **close**, close it yourself under your own agent identity:
    `ws done <task> "what shipped" --human-close "the human's close instruction"`.
    This also resolves an existing review gate; do not ask the human to run `ws approve`,
-   borrow an operator token, or leave completed work in review. Acceptance and test gates
-   still apply: never invent evidence or check off unfinished work to obtain `done`.
-7. If the human explicitly chooses **review**, use
-   `ws review <task> --human-review "the human's review request"`. A human-added
-   `human-review` label is also an explicit request. A later **close** answer uses step 6.
-   Do not send every task to review by habit or because an old message says approval is mandatory.
+   borrow an operator token, or leave completed work in review. Record an existing explicit
+   close instruction for the task or named batch without asking again. Never invent a human
+   instruction: silence does not waive an explicit review request.
 
 Messages reach you only if you read them. Between steps run `ws alerts --wait` (or
 `ws alerts`): a human may be asking you something. Answer a question on its board
