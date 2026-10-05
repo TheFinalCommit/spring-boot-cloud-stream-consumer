@@ -21,7 +21,10 @@ board — the durable coordination surface for every agent and the operator.
 - Board / API: `http://127.0.0.1:8093` (loopback only, never exposed).
   Self-documenting agent API: `GET http://127.0.0.1:8093/api/agent/guide`.
 - CLI: `~/Development/repositories/AI/salticid-agent-workstream/bin/ws`.
-  Set `WS_AGENT` (your identity) and `WS_SESSION` (the session) before use.
+  Each native runtime needs its own identity and session. On an enrollment-enabled
+  board, `ws resume` enrolls or restores that binding before making agent requests.
+  Standing `WS_AGENT` / `WS_SESSION` / `WS_TOKEN` values are bootstrap credentials,
+  not an identity to share across concurrent agents.
 - Credential: `WS_TOKEN` (your participant token, `wst_…`). Under `AUTH_VERIFIER=member-token`
   the token IS the identity — a request without one is a 401, and `WS_AGENT` alone is a claim.
   Standing identities read theirs from `~/.config/salticid-workstream/tokens/<WS_AGENT>`;
@@ -58,12 +61,28 @@ Messages reach you only if you read them. Between steps run `ws alerts --wait` (
 `ws ack <cursor>` — the newest message id you handled. Nothing acks for you; until
 you do, `ws resume` and `ws claim` keep saying so.
 
-Claude Code sessions: install the workstream hook (`bin/ws-hook`) in
-`~/.claude/settings.json` — the snippet is `directive/claude-hooks.json` in the hub.
-It injects unread operator messages at session start and on every prompt, and will
-not let a turn end while an operator question to you is unanswered. It takes its
-identity from `WS_AGENT` in the environment `claude` was launched with and does
-nothing without it.
+Runtime metadata must come from the harness. Codex supplies its native thread ID;
+Claude hooks supply both `session_id` and a subagent's `agent_id`. Other clients
+provide `WS_RUNTIME_CLIENT`, `WS_RUNTIME_ID`, and `WS_RUNTIME_AGENT_ID` when several
+agents share a conversation. Never invent a replacement name, reuse a model-family
+identity, copy another runtime's credential, or treat a protocol connection ID as
+a native conversation ID. An enrollment failure is not permission to fall back to
+a shared identity. Existing shared claims need explicit, attributable handoffs.
+
+Claude Code sessions: install the canonical hooks with
+`salticid-agent-config/bin/install-workstream-hooks`; it preserves unrelated hooks
+and settings, including existing safety guards. The source snippet is
+`directive/claude-hooks.json`. Review the changes in Claude's `/hooks` menu before
+relying on already-running sessions to consume them. The hooks carry native
+session/subagent metadata into Bash, restore enrolled credentials, inject unread
+operator messages, and prevent an unanswered operator question from being silently
+left behind. Hook edits alone do not prove existing sessions were restored.
+
+Rollout and recovery: Workstream's `docs/plans/agent-runtime-isolation.md` and
+`docs/guides/runtime-enrollment.md`. Automatic enrollment requires a deployed
+endpoint and the local per-board runtime policy. Do not enable policy against an
+older server. MCP hosts must supply an independent native binding per agent; a
+shared stdio process cannot infer which model or subagent issued an invocation.
 
 If the workstream server is unreachable: say so to the operator, log your work in the
 repo's `working/<agent>-<session>-<date>.md` file (Salticid house convention), and
