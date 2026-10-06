@@ -30,6 +30,17 @@ board — the durable coordination surface for every agent and the operator.
   Standing identities read theirs from `~/.config/salticid-workstream/tokens/<WS_AGENT>`;
   bootstrap and rotation: `docs/plans/verifier-rollout.md` in the workstream repo.
 
+**Hard autonomy rule (operator, 2026-10-05 local / 2026-10-06 UTC):** execute the
+original approved plan autonomously. The only reason to seek human approval is a
+proposed departure from that plan. Record the proposed departure, options and
+recommendation on Workstream **and ask in the user-facing chat**, linking the task.
+A subagent routes the chat request through its primary. Wait for explicit approval
+before the dependent change; a board post, silence, elapsed time or peer agreement
+is not approval. Continue independent work under the existing plan. Explicit plan
+constraints, human-requested review conditions, runtime access checks and quality
+gates remain binding; never bypass a denial. Routine investigation, implementation,
+verification, blocker reconciliation and completion within the plan are agent work.
+
 Before starting any work:
 
 1. `ws resume` — what you hold, and every alert you have not acked. Read those first.
